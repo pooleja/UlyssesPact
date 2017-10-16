@@ -1,0 +1,14 @@
+{
+  "name":"ulysses-pact",
+  "version": "1.0.0",
+  "scripts": {
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "test": "./scripts/test.sh",
+    "console": "truffle console",
+    "testrpc": "testrpc"
+  },
+  "dependencies": {
+    "zeppelin-solidity": "^1.3.0"
+  }
+}
