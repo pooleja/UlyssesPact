@@ -1,6 +1,7 @@
 pragma solidity ^0.4.15;
 
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
+import 'zeppelin-solidity/contracts/token/StandardToken.sol';
 
 /**
  * @title UlyssesPact
@@ -19,13 +20,25 @@ contract UlyssesPact is Ownable {
   // Fallback function to allow ETH to be sent in
   function() payable { }
 
-  // Call to withdraw ETH or tokens that implement ERC20 token interface
-  function claim() onlyOwner {
+  // Call to withdraw ETH
+  function withdrawEth() onlyOwner {
 
     // Don't allow anything to be withdrawn until the unlock time
     require(block.timestamp > unlockTime);
 
     // Withdraw the ETH    
     owner.transfer(this.balance);
+  }
+
+  // Call to withdraw ERC20 Tokens
+  function withdrawTokens(address _token) onlyOwner {
+
+    // Don't allow anything to be withdrawn until the unlock time
+    require(block.timestamp > unlockTime);
+
+    // Withdraw the tokens
+    StandardToken token = StandardToken(_token);
+    uint balance = token.balanceOf(this);
+    token.transfer(owner, balance);
   }
 }

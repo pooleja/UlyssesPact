@@ -15,7 +15,10 @@ contract('Ulysses Pact', async (accounts) => {
   })
 
   it('should allow withdraw of ETH after time passes', async () => {
+    // Get the unlock time 100 seconds into the future from now
     let unlockTime = web3.eth.getBlock(web3.eth.blockNumber).timestamp + 100
+
+    // Create the contract with the unlock time
     let contractInst = await UlyssesPact.new(unlockTime)
 
     // Send some ETH into the contract
@@ -23,17 +26,17 @@ contract('Ulysses Pact', async (accounts) => {
 
     // Should fail before time
     try {
-      await contractInst.claim()
+      await contractInst.withdrawEth()
       assert.fail('Before the unlock time should fail')
     } catch (error) {
       assertJump(error)
     }
 
-    // Fast forward 100 blocks
+    // Fast forward 100 seconds
     await timeHelper.fastForward(101)
 
     // Withdraw should succeed
-    await contractInst.claim()
+    await contractInst.withdrawEth()
   })
 
   it('should not allow withdraw of ETH from another account', async () => {
@@ -48,7 +51,7 @@ contract('Ulysses Pact', async (accounts) => {
 
     // Withdraw from account[2], which is not the owner should fail
     try {
-      await contractInst.claim({from: accounts[2]})
+      await contractInst.withdrawEth({from: accounts[2]})
       assert.fail('Non owner withdraw should fail')
     } catch (error) {
       assertJump(error)
